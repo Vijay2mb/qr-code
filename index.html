@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Visitor Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="brand-mark">QR</div>
+      <p class="eyebrow">SECURE ACCESS PORTAL</p>
+      <h1>Visitor Management</h1>
+      <p class="muted">Sign in to manage visitor registrations, QR passes, and entry logs.</p>
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input id="username" name="username" autocomplete="username" placeholder="Enter username" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+        <div class="login-options"><label class="remember"><input type="checkbox" id="remember"> Remember me</label><span>Admin access</span></div>
+        <button class="btn primary full" type="submit">Login securely <span>→</span></button>
+        <p id="loginError" class="error" role="alert"></p>
+      </form>
+      <div class="demo-note"><strong>Demo login</strong><br>Username: <code>admin</code> &nbsp; Password: <code>admin123</code></div>
+      <p class="tiny">Demo interface only. Connect a secure backend before real-world use.</p>
+    </div>
+    <div class="login-side">
+      <div class="side-content">
+        <span class="pill">DIGITAL • SECURE • TIME-STAMPED</span>
+        <h2>A smarter welcome<br>starts at the entrance.</h2>
+        <p>Register visitors online, issue QR passes, verify entry, and keep a searchable digital record.</p>
+        <div class="mini-stats"><div><strong>01</strong><span>Register</span></div><div><strong>02</strong><span>Scan QR</span></div><div><strong>03</strong><span>Track</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="side-brand"><div class="brand-mark small">QR</div><div><strong>GatePass</strong><small>VISITOR SYSTEM</small></div></div>
+      <nav>
+        <button class="nav-link active" data-view="dashboard"><span>▦</span> Dashboard</button>
+        <button class="nav-link" data-view="registration"><span>＋</span> Register Visitor</button>
+        <button class="nav-link" data-view="logs"><span>☷</span> Visitor Logs</button>
+        <button class="nav-link" data-view="admin"><span>▤</span> Admin Records</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="secure-dot"></div><div><strong>System status</strong><small>Demo environment active</small></div></div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><p class="eyebrow">VISITOR OPERATIONS</p><h1 id="pageTitle">Dashboard overview</h1></div>
+        <div class="user-area"><div class="avatar">A</div><div><strong>Administrator</strong><small>System admin</small></div><button id="logoutBtn" class="btn light">Logout</button></div>
+      </header>
+
+      <section id="dashboardView" class="view">
+        <div class="welcome"><div><span class="pill light-pill">LIVE OVERVIEW</span><h2>Good day, Admin 👋</h2><p>Here’s what’s happening at your entrance today.</p></div><button class="btn primary" data-goto="registration">＋ Register visitor</button></div>
+        <div class="stats-grid">
+          <article class="stat-card"><span class="stat-icon blue">♙</span><p>Total visitors</p><h3 id="totalCount">0</h3><small>All registered records</small></article>
+          <article class="stat-card"><span class="stat-icon green">✓</span><p>Currently inside</p><h3 id="insideCount">0</h3><small>Active visits</small></article>
+          <article class="stat-card"><span class="stat-icon purple">▦</span><p>QR passes issued</p><h3 id="qrCount">0</h3><small>Digital visitor passes</small></article>
+          <article class="stat-card"><span class="stat-icon orange">◷</span><p>Exited visitors</p><h3 id="exitedCount">0</h3><small>Completed visits</small></article>
+        </div>
+        <div class="content-grid">
+          <article class="panel"><div class="panel-heading"><div><h3>Recent visitor activity</h3><p>Latest registrations and entry events</p></div><button class="text-btn" data-goto="logs">View all →</button></div><div class="table-wrap"><table><thead><tr><th>Visitor</th><th>Purpose</th><th>Entry time</th><th>Status</th></tr></thead><tbody id="recentTable"></tbody></table></div></article>
+          <article class="panel quick-panel"><h3>Quick actions</h3><p>Common tasks, one click away.</p><button class="quick-action" data-goto="registration"><span class="quick-icon">＋</span><span><strong>Register a visitor</strong><small>Create a visitor profile and QR pass</small></span><b>→</b></button><button class="quick-action" data-goto="logs"><span class="quick-icon">▦</span><span><strong>Verify QR pass</strong><small>Simulate a scan and log entry/exit</small></span><b>→</b></button></article>
+        </div>
+      </section>
+
+      <section id="registrationView" class="view hidden">
+        <div class="section-intro"><h2>Visitor registration</h2><p>Enter visitor details to generate a unique QR pass.</p></div>
+        <div class="content-grid register-grid">
+          <article class="panel"><div class="panel-heading"><div><h3>Visitor details</h3><p>Fields marked * are required</p></div><span class="step-tag">STEP 01</span></div>
+            <form id="visitorForm" class="visitor-form">
+              <div class="form-row"><div><label for="visitorName">Full name *</label><input id="visitorName" required placeholder="e.g. Ravi Kumar"></div><div><label for="visitorPhone">Phone number *</label><input id="visitorPhone" required inputmode="tel" pattern="[0-9+() -]{7,18}" placeholder="e.g. 9876543210"></div></div>
+              <div class="form-row"><div><label for="visitorPurpose">Purpose of visit *</label><select id="visitorPurpose" required><option value="">Choose purpose</option><option>Meeting</option><option>Interview</option><option>Delivery</option><option>Maintenance</option><option>Personal visit</option><option>Other</option></select></div><div><label for="hostName">Person to meet</label><input id="hostName" placeholder="Host / department"></div></div>
+              <div><label for="visitorNotes">Notes (optional)</label><textarea id="visitorNotes" rows="3" placeholder="Add any useful visit details"></textarea></div>
+              <button class="btn primary" type="submit">Generate QR pass <span>→</span></button>
+            </form>
+          </article>
+          <article class="panel pass-panel"><div class="panel-heading"><div><h3>Digital visitor pass</h3><p>Generated QR code appears here</p></div><span class="step-tag">STEP 02</span></div><div id="emptyPass" class="empty-pass"><div class="empty-qr">▦</div><strong>No pass generated yet</strong><p>Complete the visitor form to create a QR pass.</p></div><div id="visitorPass" class="visitor-pass hidden"><div class="pass-top"><span class="pill light-pill">VISITOR PASS</span><span class="pass-status">● VALID</span></div><div id="qrcode" class="qr-output"></div><h3 id="passName">Visitor name</h3><p id="passPhone"></p><p id="passPurpose" class="pass-purpose"></p><div class="pass-meta"><span>PASS ID</span><strong id="passId"></strong></div><div class="pass-meta"><span>CREATED</span><strong id="passCreated"></strong></div><button id="printPass" class="btn outline full">Print visitor pass</button></div></article>
+        </div>
+      </section>
+
+      <section id="logsView" class="view hidden">
+        <div class="section-intro"><h2>Visitor logs</h2><p>Review visitor activity and simulate QR scanning at the entrance.</p></div>
+        <article class="panel scan-panel"><div class="scan-illustration">▦</div><div class="scan-copy"><h3>Entrance QR scanner</h3><p>In this demo, select a visitor below to simulate scanning their QR pass. A real scanner requires device or camera integration.</p></div><div class="scan-controls"><select id="scanVisitorSelect"><option value="">Select visitor pass</option></select><button id="scanBtn" class="btn primary">Simulate scan</button></div><p id="scanMessage" class="scan-message" aria-live="polite"></p></article>
+        <article class="panel"><div class="panel-heading"><div><h3>All visitor activity</h3><p>Search and filter the visitor register</p></div><div class="table-tools"><input id="logSearch" placeholder="Search name or phone…" aria-label="Search visitor logs"><select id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option><option value="Inside">Inside</option><option value="Exited">Exited</option></select></div></div><div class="table-wrap"><table><thead><tr><th>Visitor</th><th>Phone</th><th>Purpose</th><th>Entry time</th><th>Exit time</th><th>Status</th><th>Action</th></tr></thead><tbody id="logsTable"></tbody></table></div><p id="noLogs" class="empty-table hidden">No matching visitor records.</p></article>
+      </section>
+
+      <section id="adminView" class="view hidden">
+        <div class="section-intro"><h2>Admin records</h2><p>Complete visitor records stored in this browser demo.</p></div>
+        <article class="panel"><div class="panel-heading"><div><h3>Visitor database</h3><p>Use export to download the current records as a CSV file.</p></div><button id="exportBtn" class="btn outline">↓ Export CSV</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Purpose</th><th>Host</th><th>Entry time</th><th>Exit time</th><th>Status</th></tr></thead><tbody id="adminTable"></tbody></table></div></article>
+        <div class="notice"><strong>Prototype storage:</strong> Records are saved in your browser using localStorage. For a real deployment, use a backend API, authenticated sessions, server-side validation, and a database such as MySQL or PostgreSQL.</div>
+      </section>
+      <footer>© 2026 GatePass Visitor Management <span>Digital • Secure • Time-stamped • Easy tracking</span></footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
